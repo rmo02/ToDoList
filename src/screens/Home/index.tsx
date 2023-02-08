@@ -32,7 +32,7 @@ export function Home() {
   
 
   function handleSelect(item: string){
-    setSelected(true);
+    setSelected(item);
     setCompleted([item])
     console.log("clicou")
   }
