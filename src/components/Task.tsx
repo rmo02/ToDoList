@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import uuid from 'react-native-uuid';
 
 type Props = {
   name: string;
@@ -24,7 +25,7 @@ export function Task({ name, onRemove, onSelect, selected }: Props) {
       }}
     >
       {selected ? (
-        <TouchableOpacity onPress={onSelect}>
+        <TouchableOpacity  onPress={onSelect}>
           <View
             style={{
               backgroundColor: "#5E60CE",
@@ -44,7 +45,9 @@ export function Task({ name, onRemove, onSelect, selected }: Props) {
         </TouchableOpacity>
       )}
 
-      <Text style={{ color: "white" }}>{name}</Text>
+      {/* {uuid.v4()} */}
+
+      <Text style={{ color: "white" }}>{name} </Text>
       <TouchableOpacity onPress={onRemove}>
         <FontAwesome name="trash-o" size={24} color="#808080" />
       </TouchableOpacity>

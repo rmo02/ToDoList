@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Alert, FlatList, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Task } from "../../components/Task";
+import uuid from 'react-native-uuid';
+
+
 
 export function Home() {
   const [tasks, setTasks] = useState<string[]>([]);
@@ -29,14 +32,36 @@ export function Home() {
   ])
   }
 
-  
-
-  function handleSelect(item: string){
-    setSelected(item);
-    setCompleted([item])
-    console.log("clicou")
+  function Concluida (item:string){
+    setSelected(true);
+    completed.includes(taskName);
+    setCompleted(prevState => [...prevState, item])
+    console.log("item concluido")
   }
 
+  function inProgress(name: string){
+    setSelected(false);
+    setCompleted(prevState => prevState.filter(task => task !== name))
+  }
+
+
+  function handleCompleted (item:string) {
+    Alert.alert("Concluida", `A tarefa foi concluida?`, [
+      {
+        text:"Sim",
+        onPress:() => Concluida(item)
+      },
+      {
+        text:"Não",
+        onPress:() => inProgress(item),
+        style:"cancel"
+      }
+    ])
+  }
+
+  console.log(tasks)
+
+  
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
       <View style={{ alignItems: "center", marginTop: 60 }}>
@@ -144,11 +169,12 @@ export function Home() {
           data={tasks}
           keyExtractor={(item) => item}
           renderItem={({item}) => (
-            <Task 
+            <Task
+            key={item}
             name={item}
-            onSelect={()=> handleSelect(item)}
-            selected={selected}
+            onSelect={()=> handleCompleted(item)}
             onRemove={()=>handleRemoveTask(item)}
+            selected={selected}
             />
           )}
           showsVerticalScrollIndicator={false}
