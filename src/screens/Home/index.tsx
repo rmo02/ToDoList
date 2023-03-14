@@ -1,66 +1,65 @@
 import { useState } from "react";
 import { Alert, FlatList, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Task } from "../../components/Task";
-import uuid from 'react-native-uuid';
-
-
+import { v4 as uuidv4 } from 'uuid';
 
 export function Home() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<{ id: string, name: string }[]>([]);
   const [taskName, setTaskName] = useState('');
-  const [selected , setSelected] = useState(false)
+  const [selected, setSelected] = useState(false)
   const [completed, setCompleted] = useState<string[]>([]);
 
-  function handleTaskNameAdd(){
-    if(tasks.includes(taskName)){
+  function handleTaskNameAdd() {
+    if (tasks.some(task => task.name === taskName)) {
       return Alert.alert("Tarefa já existente")
     }
-    setTasks(prevState => [...prevState, taskName]);
+    const newTask = { id: uuidv4(), name: taskName }
+    setTasks(prevState => [...prevState, newTask]);
     setTaskName('');
   }
 
-  function handleRemoveTask(name: string){
+  function handleRemoveTask(id: string) {
     Alert.alert("Remover", `Remover a tarefa?`, [
       {
-      text:"Sim",
-      onPress:() => setTasks(prevState => prevState.filter(task => task !== name))
-    },
-    {
-      text: "Não",
-      style:"cancel"
-    }
-  ])
-  }
-
-  function Concluida (item:string){
-    setSelected(true);
-    completed.includes(taskName);
-    setCompleted(prevState => [...prevState, item])
-    console.log("item concluido")
-  }
-
-  function inProgress(name: string){
-    setSelected(false);
-    setCompleted(prevState => prevState.filter(task => task !== name))
-  }
-
-
-  function handleCompleted (item:string) {
-    Alert.alert("Concluida", `A tarefa foi concluida?`, [
-      {
-        text:"Sim",
-        onPress:() => Concluida(item)
+        text: "Sim",
+        onPress: () => setTasks(prevState => prevState.filter(tasks => tasks.id !== id))
       },
       {
-        text:"Não",
-        onPress:() => inProgress(item),
-        style:"cancel"
+        text: "Não",
+        style: "cancel"
+      }
+    ])
+  }
+
+  function Concluida(id: string) {
+    setSelected(true);
+    const task = tasks.find(task => task.id === id);
+    if (task) {
+      setCompleted(prevState => [...prevState, task.id])
+      console.log("item concluido")
+    }
+  }
+
+  function inProgress(id: string) {
+    setSelected(false);
+    setCompleted(prevState => prevState.filter(task => task !== id))
+  }
+
+  function handleCompleted(id: string) {
+    Alert.alert("Concluida", `A tarefa foi concluida?`, [
+      {
+        text: "Sim",
+        onPress: () => Concluida(id)
+      },
+      {
+        text: "Não",
+        onPress: () => inProgress(id),
+        style: "cancel"
       }
     ])
   }
 
   console.log(tasks)
-
   
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
@@ -167,13 +166,13 @@ export function Home() {
 
          <FlatList 
           data={tasks}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           renderItem={({item}) => (
             <Task
-            key={item}
-            name={item}
-            onSelect={()=> handleCompleted(item)}
-            onRemove={()=>handleRemoveTask(item)}
+            key={item.id}
+            name={item.name}
+            onSelect={()=> handleCompleted(item.id)}
+            onRemove={()=>handleRemoveTask(item.id)}
             selected={selected}
             />
           )}

@@ -2,7 +2,6 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import uuid from 'react-native-uuid';
 
 type Props = {
   name: string;
@@ -44,8 +43,6 @@ export function Task({ name, onRemove, onSelect, selected }: Props) {
           <Feather name="circle" size={24} color="#1E6F9F" />
         </TouchableOpacity>
       )}
-
-      {/* {uuid.v4()} */}
 
       <Text style={{ color: "white" }}>{name} </Text>
       <TouchableOpacity onPress={onRemove}>
